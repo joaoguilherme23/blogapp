@@ -63,23 +63,61 @@ router.post('/categorias/nova',(req, res)=>{
     }
 });
 
-router.get("/categorias/edit:id", (req,res)=>{
-    Categoria.findOne({_id:req.params.id}).lean().then((categoria)=>{
-        res.render("admin/editcategorias", {
-            id: categoria.id,
-            nome: categoria.nome,
-            slug: categoria.slug
-        });
+router.get("/categorias/edit/:id", (req,res)=>{
+    Categoria.findOne({_id: req.params.id}).lean().then((categoria)=>{
+        res.render("admin/editcategorias", {categoria: categoria});
+
     }).catch((err)=>{
         req.flash("error_msg","esta categoria nao existe")
-        res.redirect("/admin/categorias")
+        res.redirect("/categorias")
     })    
 });
 
 router.post("/categorias/edit",(req,res)=>{
-    Categoria.where({_id:req.body.id}).updateOne({nome:req.body.nome, slug:req.body.slug})
+    Categoria.findOne({_id: req.body.id}).then((categoria)=>{
+        categoria.nome = req.body.nome
+        categoria.slug = req.body.slug
+        categoria.save().then(()=>{
+            req.flash("succes_msg", "categoria editada com sucesso")
+            res.redirect("/admin/categorias")
+        }).catch((err)=>{
+            req.flash("error_msg", "hove um erro interno ao salvar a a edição da categoria")
+            res.redirect("/admin/categorias")
+            console.log(err)
+        })
 
+    }).catch((err)=>{
+        req.flash("error_msg", "houve um erro ao editar a categoria");
+        res.redirect("/admin/categorias");
+    })
 })
+
+router.post("/categorias/deletar", (req,res) =>{
+    Categoria.deleteOne({_id: req.body.id}).then(()=>{
+        req.flash("success_msg", "Categoria deletada com sucesso");
+        res.redirect("/admin/categorias");
+    }).catch((err)=>{
+        req.flash("error_msg","houve um error ao deletar a categoria");
+        res.redirect("/admin/categorias");
+    })
+
+
+});
+
+router.get("/postagens", (req,res)=>{
+    res.render("admin/postagens");
+});
+
+router.get("/postagens/add", (req,res)=>{
+    Categoria.find().lean().then((categorias)=>{
+        res.render("admin/addpostagem", {categorias: categorias})
+    }).catch((err)=>{
+        req.flash("error_msg","houve um erro ao carregar o formulario")
+        res.redirect("/admin")
+    })
+    
+})
+
     
 
 

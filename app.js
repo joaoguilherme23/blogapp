@@ -11,6 +11,8 @@ const flash = require("connect-flash")
 
 
 //configurações
+
+
     //configuração cookie sessão
     app.use(session({
         secret: "cursodenode",
@@ -37,7 +39,7 @@ const flash = require("connect-flash")
     // configuração Handlebars
     app.engine('handlebars', handlebars.engine({defaultLayout:'main'}));
     app.set('view engine', 'handlebars');
-
+    
     //configuração moongose
     mongoose.Promise = global.Promise; //configuração para evitar erros
     mongoose.connect("mongodb://localhost/blogapp",{}).then((req, res) =>{
@@ -46,6 +48,7 @@ const flash = require("connect-flash")
         console.log("erro ao conectar com o banco:" + erro);
     });
 
+ 
 
 // rotas 
     app.use("/admin",admin);
