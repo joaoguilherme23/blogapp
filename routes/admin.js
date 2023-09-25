@@ -3,6 +3,9 @@ const router = express.Router();
 const mongoose = require("mongoose");    
 require("../models/Categoria");
 const Categoria = mongoose.model("categorias");
+require("../models/Postagem");
+const Postagem = mongoose.model("postagens");
+
 
 router.get('/',(req,res)=>{
     res.render("admin/index")
@@ -73,24 +76,34 @@ router.get("/categorias/edit/:id", (req,res)=>{
     })    
 });
 
-router.post("/categorias/edit",(req,res)=>{
-    Categoria.findOne({_id: req.body.id}).then((categoria)=>{
-        categoria.nome = req.body.nome
-        categoria.slug = req.body.slug
-        categoria.save().then(()=>{
-            req.flash("succes_msg", "categoria editada com sucesso")
+router.post("/categorias/edit/:id",(req,res)=>{
+    const {id, nome, slug} = req.body // é a mesma coisa que req.body.nome 
+    const erros = []
+    if(!nome || !slug ){
+        erros.push({texto: "Os campos nome e slug são obrigatórios"})
+    }
+
+    if(erros.length>0){
+        Categoria.findOne({_id:id}).lean().then(()=>{
+            res.render("admin/editcategorias", {categoria, erros})
+
+        }).catch((erro)=>{
+            req.flash("error_msg","os campos nome e slug são obrigatórios")
+            res.redirect("/admin/categorias")
+        })
+    }
+
+    else{
+        Categoria.findOneAndUpdate({_id: id}, {nome, slug}, {new:true}).then((categoria)=>{
+            req.flash("success_msg","categoria editada com sucesso")
             res.redirect("/admin/categorias")
         }).catch((err)=>{
-            req.flash("error_msg", "hove um erro interno ao salvar a a edição da categoria")
+            req.flash("error_msg","houve um erro interno ao editar a categoria")
             res.redirect("/admin/categorias")
-            console.log(err)
+            console.log(err);
         })
-
-    }).catch((err)=>{
-        req.flash("error_msg", "houve um erro ao editar a categoria");
-        res.redirect("/admin/categorias");
-    })
-})
+    }
+});
 
 router.post("/categorias/deletar", (req,res) =>{
     Categoria.deleteOne({_id: req.body.id}).then(()=>{
@@ -105,7 +118,14 @@ router.post("/categorias/deletar", (req,res) =>{
 });
 
 router.get("/postagens", (req,res)=>{
-    res.render("admin/postagens");
+    Postagem.find().lean().populate("categoria").sort({data:"desc"}).then((postagens)=>{
+        res.render("admin/postagens", {postagens: postagens})
+        res.render("admin/postagens");
+    }).catch((err)=>{
+        req.flash("error_msg","Houve um erro ao listar as postagens")
+        console.log(err)
+        res.redirect("/admin")
+    })
 });
 
 router.get("/postagens/add", (req,res)=>{
@@ -115,8 +135,92 @@ router.get("/postagens/add", (req,res)=>{
         req.flash("error_msg","houve um erro ao carregar o formulario")
         res.redirect("/admin")
     })
+});
+
+router.post("/postagens/nova", (req,res)=>{
+        const {titulo, slug, descricao, conteudo, categoria} = req.body
+        const erros = []
+        
+        if(!titulo || !slug || !descricao|| !conteudo || !categoria){
+            erros.push({texto: "todos os campos são obrigatórios"})
+        }
+
+        if(erros.length > 0){
+            res.render("admin/addpostagens", {erros: erros})
+        }
+
+        else{
+            const novaPostagem = {titulo, slug, descricao, conteudo, categoria}
+        
+        new Postagem(novaPostagem).save().then(()=>{
+            req.flash("success_msg", "postagem criada com sucesso")
+            res.redirect("/admin/postagens")
+            console.log("postagem salva no banco")
+        }).catch((err)=>{
+            req.flash("error_msg","houve um erro durante ao salvar os dados da nova postagem")
+            res.redirect("/admin/postagens")
+            console.log(err)
+        })
+    }    
+});
+
+router.get("/postagens/edit/:id",(req,res)=>{
+    Postagem.findById({_id: req.params.id}).lean().then((postagem)=>{
+        Categoria.find().lean().then((categorias)=>{
+            res.render("admin/editpostagens",{categorias: categorias, postagem: postagem})
+
+        }).catch((err)=>{
+            req.flash("error_msg","houve um erro ao listar a postagem")
+            res.redirect("/admin/postagens")
+        })
+
+    }).catch((err)=>{
+        req.flash("error_msg","Houve um carregar o formulario de edição")
+        res.redirect("/admin/postagens")
+
+    }) 
+});
+
+router.post("/postagens/edit/:id", (req,res)=>{
     
+    const{titulo, descricao, slug, conteudo, categoria} = req.body
+    const erros = []
+
+    if(!titulo || !descricao || !slug || !conteudo || !categoria){
+        erros.push({texto: "todos os campos são obrigatórios"})
+    }
+    
+    if(erros.length > 0){
+        res.render("admin/postagens")
+    }
+
+    else{
+        const postagemEditada = { titulo, descricao, slug, conteudo, categoria };
+        Postagem.findOneAndUpdate({ _id: req.params.id }, postagemEditada, { new: true })
+            .then(() => {
+                req.flash("success_msg", "Postagem editada com sucesso");
+                res.redirect("/admin/postagens");
+                
+            })
+            .catch((err) => {
+                req.flash("error_msg", "Houve um erro ao salvar a edição");
+                res.redirect("/admin/postagens");
+                console.log(err)
+            });
+    }
+});
+
+router.get("/postagens/deletar/:id",(req,res)=>{
+    Postagem.findOneAndDelete({_id: req.params.id}).then(()=>{
+        req.flash("success_msg","postagem deletada com sucesso")
+        res.redirect("/admin/postagens/edit")
+    }).catch((err)=>{
+        req.flash("error_msg","Houve um erro ao deletar a postagem")
+        res.redirect("/admin/postagens")
+    })
 })
+
+
 
     
 

@@ -20,6 +20,10 @@ const Postagem = new Schema({
         ref: "categorias",
         required: true
     },
+    descricao:{
+        type: String,
+        required: true
+    },
 
     data: {
         type: Date,
