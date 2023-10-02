@@ -141,8 +141,20 @@ router.post("/postagens/nova", (req,res)=>{
         const {titulo, slug, descricao, conteudo, categoria} = req.body
         const erros = []
         
-        if(!titulo || !slug || !descricao|| !conteudo || !categoria){
-            erros.push({texto: "todos os campos são obrigatórios"})
+        if(!titulo || !titulo.trim() === "" || !titulo ==undefined){
+            erros.push({texto: "O campo Titulo é obrigatorio"})
+        }
+        if(!slug || !slug.trim() === "" || !slug ==undefined){
+            erros.push({texto: "O campo Slug é obrigatorio"})
+        }
+        if(!descricao || !descricao.trim() === "" || !descricao ==undefined){
+            erros.push({texto: "O campo Descrição é obrigatorio"})
+        }
+        if(!conteudo || !conteudo.trim() === "" || !conteudo ==undefined){
+            erros.push({texto: "O campo Conteudo é obrigatorio"})
+        }
+        if(!categoria || !categoria.trim() === "" || !categoria ==undefined){
+            erros.push({texto: "O campo Categoria é obrigatorio"})
         }
 
         if(erros.length > 0){
@@ -188,6 +200,21 @@ router.post("/postagens/edit/:id", (req,res)=>{
 
     if(!titulo || !descricao || !slug || !conteudo || !categoria){
         erros.push({texto: "todos os campos são obrigatórios"})
+    }
+    if(!titulo || !titulo.trim()==="" || !titulo == undefined){
+        erros.push({texto: "Para editar o campo titutlo tem que estar preenchido"})
+    }
+    if(!descricao || !descricao.trim()==="" || !descricao == undefined){
+        erros.push({texto: "Para editar o campo titutlo tem que estar preenchido"})
+    }
+    if(!slug || !slug.trim()==="" || !slug == undefined){
+        erros.push({texto: "Para editar o campo titutlo tem que estar preenchido"})
+    }
+    if(!conteudo|| !conteudo.trim()==="" || !conteudo == undefined){
+        erros.push({texto: "Para editar o campo titutlo tem que estar preenchido"})
+    }
+    if(!categoria || !categoria.trim()==="" || !categoria == undefined){
+        erros.push({texto: "Para editar o campo titutlo tem que estar preenchido"})
     }
     
     if(erros.length > 0){
