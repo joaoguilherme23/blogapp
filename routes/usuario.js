@@ -36,7 +36,7 @@ router.post("/registro", (req, res)=>{
     else{
         Usuario.findOne({email: req.body.email}).then((usuario)=>{
             if(usuario){
-                req.flash("error_msg", "Já existe uma conta com esse email fornecido")
+                req.flash("error_msg", "Já existe uma conta vinculada a esse email")
                 res.redirect("/usuarios/registro")
             }
 
@@ -84,6 +84,14 @@ router.post("/login", (req, res, next)=>{
         failureRedirect: "/usuarios/login",
         failureFlash: true
     })(req, res, next)
+})
+
+router.get("/logout", (req, res)=>{
+    req.logout((err)=>{
+        req.flash("success_msg", "Saiu, volte sempre")
+        res.redirect("/")
+    })
+    
 })
 
 
