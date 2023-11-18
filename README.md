@@ -34,9 +34,13 @@ Acesse o sistema através do navegador.
 
 # Estrutura do Projeto
 app.js: Arquivo principal da aplicação.
+
 routes/: Pasta contendo os arquivos de rota.
+
 models/: Pasta contendo os modelos do Mongoose.
+
 views/: Pasta contendo os arquivos de visualização Handlebars.
+
 public/: Pasta para arquivos estáticos (CSS, imagens, etc.).
 
 # Tecnologias Utilizadas
