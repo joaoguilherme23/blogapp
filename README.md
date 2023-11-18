@@ -45,12 +45,16 @@ public/: Pasta para arquivos estáticos (CSS, imagens, etc.).
 
 # Tecnologias Utilizadas
 Node.js
+
 Express.js
+
 MongoDB
+
 Mongoose
+
 Handlebars
 
-#Licença
+# Licença
 Este projeto está licenciado sob a Licença MIT.
 
 
