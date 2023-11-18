@@ -13,7 +13,6 @@ Clone o repositório:
 
 bash
 Copy code
-git clone https://github.com/seu-usuario/seu-projeto.git
 Instale as dependências:
 
 
