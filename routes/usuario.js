@@ -15,15 +15,15 @@ router.post("/registro", (req, res)=>{
     const{nome,email, senha, senha2} = req.body
     var erros = []
 
-    if(!nome || nome.trim() ==="" || !nome == undefined){
+    if(!nome || nome.trim() ==="" || nome == undefined){
         erros.push({texto: "Nome inválido"})
     }
 
-    if(!email || email.trim() === "" || !email == undefined){
+    if(!email || email.trim() === "" || email == undefined){
         erros.push({texto: "Email inválido"})
     }
 
-    if(!senha || senha.trim() ==="" || !senha == undefined ||senha.length <= 4){
+    if(!senha || senha.trim() ==="" || senha == undefined ||senha.length <= 4){
         erros.push({texto: "Senha inválida ou muito pequena, digite uma senha maior que 4 digitos"})
     }
     if(senha!= senha2){
