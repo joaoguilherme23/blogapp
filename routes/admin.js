@@ -142,19 +142,19 @@ router.post("/postagens/nova", eAdmin, (req,res)=>{
         const {titulo, slug, descricao, conteudo, categoria} = req.body
         const erros = []
         
-        if(!titulo || !titulo.trim() === "" || !titulo ==undefined){
+        if(!titulo || titulo.trim() === "" || titulo ==undefined){
             erros.push({texto: "O campo Titulo é obrigatorio"})
         }
-        if(!slug || !slug.trim() === "" || !slug ==undefined){
+        if(!slug || slug.trim() === "" || !slug ==undefined){
             erros.push({texto: "O campo Slug é obrigatorio"})
         }
-        if(!descricao || !descricao.trim() === "" || !descricao ==undefined){
+        if(!descricao || descricao.trim() === "" || descricao ==undefined){
             erros.push({texto: "O campo Descrição é obrigatorio"})
         }
-        if(!conteudo || !conteudo.trim() === "" || !conteudo ==undefined){
+        if(!conteudo || conteudo.trim() === "" || conteudo ==undefined){
             erros.push({texto: "O campo Conteudo é obrigatorio"})
         }
-        if(!categoria || !categoria.trim() === "" || !categoria ==undefined){
+        if(!categoria || categoria.trim() === "" || categoria ==undefined){
             erros.push({texto: "O campo Categoria é obrigatorio"})
         }
 

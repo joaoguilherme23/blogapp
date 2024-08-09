@@ -15,15 +15,15 @@ router.post("/registro", (req, res)=>{
     const{nome,email, senha, senha2} = req.body
     var erros = []
 
-    if(!nome || nome.trim() ==="" || nome == undefined){
+    if(!nome || nome.trim() ==="" || nome === undefined){
         erros.push({texto: "Nome inválido"})
     }
 
-    if(!email || email.trim() === "" || email == undefined){
+    if(!email || email.trim() === "" || email === undefined){
         erros.push({texto: "Email inválido"})
     }
 
-    if(!senha || senha.trim() ==="" || senha == undefined ||senha.length <= 4){
+    if(!senha || senha.trim() ==="" || senha === undefined ||senha.length <= 4){
         erros.push({texto: "Senha inválida ou muito pequena, digite uma senha maior que 4 digitos"})
     }
     if(senha!= senha2){
@@ -46,7 +46,7 @@ router.post("/registro", (req, res)=>{
                     email: req.body.email,
                     senha: req.body.senha
                 })
-                //quero ver hackear isso
+                
                 bcrypt.genSalt(10,(erro, salt)=>{
                     bcrypt.hash(novoUsuario.senha, salt, (erro, hash)=>{
                         if(erro){
@@ -80,7 +80,7 @@ router.get("/login", (req, res)=>{
 // rota de autenticação
 router.post("/login", (req, res, next)=>{
     passport.authenticate("local", {
-        successRedirect: "/", //caso de tudo certo ele irá redirecionar para a rota "/"
+        successRedirect: "/", 
         failureRedirect: "/usuarios/login",
         failureFlash: true
     })(req, res, next)
